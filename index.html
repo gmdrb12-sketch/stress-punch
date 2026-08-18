@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0b1020">
+<title>Stress Punch</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#0b1020;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+body{min-height:100vh}
+button,input,textarea{font:inherit}
+.app{max-width:520px;margin:auto;padding:18px 14px 36px}
+h1{margin:4px 0 6px;font-size:27px}
+.sub{color:#a7b0c0;font-size:13px;margin-bottom:14px}
+.panel{background:#121a2b;border:1px solid #25314a;border-radius:20px;padding:15px}
+.row{margin-bottom:14px}
+.label{font-size:13px;font-weight:800;margin-bottom:7px}
+textarea{width:100%;min-height:92px;border-radius:14px;border:1px solid #33415c;background:#0d1423;color:#fff;padding:12px;resize:none}
+.btn{width:100%;border:0;border-radius:15px;padding:14px 15px;font-weight:900}
+.primary{background:#ef4444;color:#fff}
+.secondary{background:#243047;color:#fff}
+.file{display:block;text-align:center;background:#243047;border-radius:14px;padding:13px;font-weight:800}
+input[type=file]{display:none}
+.filename{font-size:12px;color:#93a0b5;margin-top:7px;word-break:break-all}
+.note{font-size:11px;color:#7f8ba0;line-height:1.5;margin-top:8px}
+.game{display:none}
+.hud{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bar{height:13px;flex:1;background:#202b40;border-radius:999px;overflow:hidden}
+.barfill{height:100%;width:100%;background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444);transform-origin:left}
+.hitcount{font-size:14px;font-weight:900;min-width:66px;text-align:right}
+.stage{position:relative;height:430px;border-radius:24px;overflow:hidden;background:linear-gradient(#1a2944 0 64%,#32191b 64% 67%,#121a2b 67% 100%);border:1px solid #34425e;touch-action:manipulation}
+.rope{position:absolute;left:0;right:0;height:4px;background:#dbe3ef;opacity:.65}
+.r1{top:67%}.r2{top:77%}.r3{top:87%}
+.person{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);width:220px;text-align:center}
+.head{width:155px;height:155px;margin:auto;border-radius:50%;overflow:hidden;border:5px solid #e5e7eb;background:#303b51;box-shadow:0 12px 24px #0008;transform-origin:center}
+.head img{width:100%;height:100%;object-fit:cover}
+.bodyshape{width:205px;height:125px;margin:-10px auto 0;border-radius:70px 70px 20px 20px;background:#2b3548;border:4px solid #546176}
+.glove{position:absolute;width:92px;height:92px;border-radius:50%;background:radial-gradient(circle at 35% 25%,#fb7185,#ef4444 55%,#991b1b);border:4px solid #fecaca;pointer-events:none;opacity:0;z-index:5;box-shadow:0 12px 25px #0007}
+.glove.fire{animation:punch .22s ease-out}
+@keyframes punch{0%{opacity:0;transform:translate(var(--sx),90px) scale(.75)}45%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(0,0) scale(1.12)}}
+.head.hit{animation:hit .2s ease-out}
+@keyframes hit{0%{transform:rotate(0)}45%{transform:rotate(var(--rot)) translateX(var(--dx))}100%{transform:rotate(0)}}
+.burst{position:absolute;font-size:30px;font-weight:1000;text-shadow:0 3px 8px #000;pointer-events:none;z-index:7;animation:rise .6s ease-out forwards}
+@keyframes rise{0%{opacity:0;transform:translate(-50%,0) scale(.75)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-80px) scale(1.15)}}
+.message{margin-top:11px;background:#0d1423;border:1px solid #33415c;border-radius:16px;padding:14px;min-height:75px;line-height:1.55;font-weight:800}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.result{display:none;margin-top:10px;padding:15px;border-radius:16px;background:#0f2a1b;border:1px solid #23673c;line-height:1.55}
+.ko{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:#0009;z-index:12;font-size:58px;font-weight:1000;letter-spacing:-2px}
+.ko.show{display:flex;animation:ko .5s ease-out}
+@keyframes ko{0%{opacity:0;transform:scale(.7)}100%{opacity:1;transform:scale(1)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>🥊 스트레스 펀치</h1>
+  <div class="sub">현실 말고 게임 안에서만 시원하게.</div>
+
+  <section id="setup" class="panel">
+    <div class="row">
+      <div class="label">상대 얼굴 사진</div>
+      <label class="file" for="photoInput">📷 사진 선택</label>
+      <input id="photoInput" type="file" accept="image/*">
+      <div id="filename" class="filename">선택된 사진 없음</div>
+    </div>
+
+    <div class="row">
+      <div class="label">왜 화났어?</div>
+      <textarea id="reasonInput" maxlength="160" placeholder="예: 내 말을 무시하고 자기 말만 해서 열받음"></textarea>
+    </div>
+
+    <button id="startButton" class="btn primary" type="button">화풀이 시작 🔥</button>
+    <div class="note">사진은 이 브라우저 안에서만 표시되고 별도로 전송되지 않습니다.</div>
+  </section>
+
+  <section id="game" class="game">
+    <div class="hud">
+      <div class="bar"><div id="barFill" class="barfill"></div></div>
+      <div class="hitcount"><span id="hitCount">0</span> HIT</div>
+    </div>
+
+    <div id="stage" class="stage">
+      <div class="rope r1"></div><div class="rope r2"></div><div class="rope r3"></div>
+      <div class="person">
+        <div id="head" class="head"><img id="faceImg" alt=""></div>
+        <div class="bodyshape"></div>
+      </div>
+      <div id="glove" class="glove"></div>
+      <div id="ko" class="ko">K.O.</div>
+    </div>
+
+    <div id="message" class="message">얼굴을 탭해서 스트레스를 풀어봐.</div>
+
+    <div class="actions">
+      <button id="backButton" class="btn secondary" type="button">다시 설정</button>
+      <button id="finishButton" class="btn primary" type="button">이제 됐다 😌</button>
+    </div>
+
+    <div id="result" class="result"></div>
+  </section>
+</div>
+
+<script>
+(function(){
+  var photoInput=document.getElementById('photoInput');
+  var reasonInput=document.getElementById('reasonInput');
+  var filename=document.getElementById('filename');
+  var startButton=document.getElementById('startButton');
+  var setup=document.getElementById('setup');
+  var game=document.getElementById('game');
+  var faceImg=document.getElementById('faceImg');
+  var stage=document.getElementById('stage');
+  var head=document.getElementById('head');
+  var glove=document.getElementById('glove');
+  var message=document.getElementById('message');
+  var hitCount=document.getElementById('hitCount');
+  var barFill=document.getElementById('barFill');
+  var result=document.getElementById('result');
+  var backButton=document.getElementById('backButton');
+  var finishButton=document.getElementById('finishButton');
+  var ko=document.getElementById('ko');
+
+  var imageData='';
+  var hits=0;
+  var reason='';
+
+  var baseLines=[
+    '좋아. 그 답답함만 여기다 두고 가자.',
+    '그때 못 했던 말 대신 한 방.',
+    '생각날수록 열받지? 게임 안에서만 확실하게 풀자.',
+    '좋아, 스트레스 하나씩 지운다.',
+    '그 일 때문에 오늘 기분까지 망칠 필요는 없어.',
+    '오케이. 현실에서는 침착하게, 여기서는 시원하게.',
+    '이제 네 기분 회복이 우선이다.',
+    '거의 다 풀었다. 몇 방만 더.',
+    '오늘 화난 건 오늘 여기서 끝.',
+    '마지막. 스트레스만 남겨두고 가자.'
+  ];
+
+  function shortText(s){
+    return s.length>24?s.slice(0,24)+'…':s;
+  }
+
+  function lines(){
+    if(!reason) return baseLines;
+    return [
+      '“'+shortText(reason)+'” 때문에 열받았지. 그 답답함만 날려.',
+      '그 상황 다시 생각났지? 말 대신 한 방.',
+      '네가 화난 포인트는 충분히 알겠어. 일단 스트레스부터 빼자.',
+      '계속 곱씹지 말고 여기다 두고 가.',
+      '좋아. 그 일은 여기까지만 생각하고 한 방 더.',
+      '현실에서는 침착하게. 게임 안에서는 시원하게.',
+      '오늘 네 에너지까지 뺏기진 말자.',
+      '이제 분노보다 네 기분 회복이 먼저다.',
+      '거의 다 풀었다. 마지막 몇 방.',
+      '끝. 오늘 스트레스는 여기 두고 가자.'
+    ];
+  }
+
+  photoInput.addEventListener('change',function(){
+    var f=photoInput.files && photoInput.files[0];
+    if(!f) return;
+    filename.textContent=f.name;
+    var reader=new FileReader();
+    reader.onload=function(ev){ imageData=ev.target.result; };
+    reader.readAsDataURL(f);
+  });
+
+  startButton.addEventListener('click',function(){
+    if(!imageData){
+      alert('먼저 얼굴 사진을 선택해줘.');
+      return;
+    }
+    reason=reasonInput.value.trim();
+    faceImg.src=imageData;
+    hits=0;
+    hitCount.textContent='0';
+    barFill.style.transform='scaleX(1)';
+    result.style.display='none';
+    ko.className='ko';
+    message.textContent=reason
+      ? '“'+shortText(reason)+'” 때문에 쌓인 거지? 여기서만 시원하게 풀자.'
+      : '좋아. 얼굴을 탭해서 쌓인 스트레스를 풀어보자.';
+    setup.style.display='none';
+    game.style.display='block';
+    window.scrollTo(0,0);
+  });
+
+  function doPunch(clientX,clientY){
+    if(hits>=25) return;
+
+    var rect=stage.getBoundingClientRect();
+    var x=clientX-rect.left;
+    var y=clientY-rect.top;
+
+    glove.style.left=(x-46)+'px';
+    glove.style.top=(y-46)+'px';
+    glove.style.setProperty('--sx',(Math.random()>.5?'-150px':'150px'));
+    glove.className='glove';
+    void glove.offsetWidth;
+    glove.className='glove fire';
+
+    var dir=Math.random()>.5?1:-1;
+    head.style.setProperty('--rot',(dir*9)+'deg');
+    head.style.setProperty('--dx',(dir*10)+'px');
+    head.className='head';
+    void head.offsetWidth;
+    head.className='head hit';
+
+    var burst=document.createElement('div');
+    burst.className='burst';
+    burst.textContent=['퍽!','퐉!','POW!','BAM!','퍽!!'][Math.floor(Math.random()*5)];
+    burst.style.left=x+'px';
+    burst.style.top=(y-5)+'px';
+    stage.appendChild(burst);
+    setTimeout(function(){ if(burst.parentNode) burst.parentNode.removeChild(burst); },650);
+
+    if(navigator.vibrate){ try{navigator.vibrate(25);}catch(e){} }
+
+    hits++;
+    hitCount.textContent=String(hits);
+    var remain=Math.max(0,1-hits/25);
+    barFill.style.transform='scaleX('+remain+')';
+
+    var ls=lines();
+    var idx=Math.min(ls.length-1,Math.floor(hits/3));
+    message.textContent=ls[idx];
+
+    if(hits>=25){
+      ko.className='ko show';
+      message.textContent='끝. 오늘 스트레스는 여기까지만. 이제 네 기분 챙기러 가자.';
+      result.style.display='block';
+      result.innerHTML='🥊 <b>25 HIT 완료.</b><br>화난 일은 게임에 두고 현실에서는 네 에너지를 아끼자.';
+    }
+  }
+
+  stage.addEventListener('click',function(e){
+    doPunch(e.clientX,e.clientY);
+  });
+
+  backButton.addEventListener('click',function(){
+    game.style.display='none';
+    setup.style.display='block';
+    ko.className='ko';
+  });
+
+  finishButton.addEventListener('click',function(){
+    result.style.display='block';
+    result.innerHTML='😌 <b>'+hits+' HIT 후 종료.</b><br>'+(reason?'“'+shortText(reason)+'” 때문에 시작했지만, 이제 그 일보다 네 컨디션이 더 중요해.':'오늘 스트레스는 여기까지만.') ;
+    message.textContent='종료. 오늘 스트레스는 이 화면에 두고 가자.';
+  });
+})();
+</script>
+</body>
+</html>
