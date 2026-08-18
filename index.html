@@ -4,424 +4,364 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#070b13">
-<title>STRESS PUNCH v3</title>
+<title>STRESS PUNCH v4</title>
+
 <style>
-:root{
-  --bg:#070b13;--panel:#111827;--line:#2a3549;--text:#f8fafc;--muted:#94a3b8;
-  --red:#ef4444;--blue:#3b82f6;--gold:#f59e0b;--green:#22c55e;
-}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{
-  margin:0;min-height:100%;
-  background:radial-gradient(circle at 50% 0,#1a2940 0,#0a101c 48%,#05070c 100%);
-  color:white;
-  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif
+margin:0;min-height:100%;color:white;
+font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
+background:radial-gradient(circle at 50% 0,#1e2c49,#070b13 60%,#02040a)
 }
-button,input,textarea{font:inherit}
+button,textarea{font:inherit}
 button{touch-action:manipulation}
-.app{width:min(100%,560px);margin:0 auto;padding:14px 14px 36px}
-.logo{display:flex;align-items:end;justify-content:space-between;margin:4px 0 12px}
-.logo h1{margin:0;font-size:28px;font-weight:1000}
-.logo small{color:#fca5a5;font-weight:900}
+.app{max-width:580px;margin:auto;padding:14px 14px 40px}
+h1{margin:5px 0 12px;font-size:29px;font-weight:1000}
 .panel{
-  background:#111827;
-  border:1px solid #2a3549;
-  border-radius:20px;
-  padding:15px;
+background:#111827;border:1px solid #334155;
+border-radius:20px;padding:15px
 }
-.label{font-size:13px;font-weight:900;margin-bottom:7px}
-.row{margin-bottom:13px}
-.file-btn{
-  display:block;background:#1f2937;border:1px solid #374151;
-  border-radius:14px;padding:13px;text-align:center;font-weight:900
+.label{font-size:13px;font-weight:900;margin:10px 0 7px}
+.filebtn{
+display:block;background:#1f2937;border:1px solid #475569;
+border-radius:14px;padding:14px;text-align:center;font-weight:900
 }
 input[type=file]{display:none}
-.file-name{font-size:12px;color:#94a3b8;margin-top:7px}
+#filename{font-size:12px;color:#94a3b8;margin-top:7px}
 textarea{
-  width:100%;height:92px;resize:none;
-  background:#0b1220;border:1px solid #334155;
-  border-radius:14px;color:white;padding:12px
-}
-.btn{
-  border:0;border-radius:15px;padding:14px;
-  font-weight:1000;color:white
+width:100%;height:90px;background:#0b1220;color:white;
+border:1px solid #334155;border-radius:14px;padding:12px;resize:none
 }
 .start{
-  width:100%;
-  background:linear-gradient(135deg,#ef4444,#b91c1c)
+width:100%;margin-top:12px;border:0;border-radius:15px;
+padding:15px;background:linear-gradient(135deg,#ef4444,#991b1b);
+color:white;font-weight:1000;font-size:17px
 }
-.game{display:none}
+#game{display:none}
 
-.stats{display:grid;gap:8px;margin-bottom:10px}
-.statrow{
-  display:grid;
-  grid-template-columns:70px 1fr 58px;
-  gap:8px;
-  align-items:center
-}
-.statlabel{font-size:12px;font-weight:1000}
-.bar{
-  height:14px;border-radius:999px;
-  background:#1f2937;overflow:hidden;
-  border:1px solid #374151
-}
-.fill{
-  height:100%;
-  width:100%;
-  transform-origin:left;
-  transition:transform .2s ease
-}
-.hpfill{background:linear-gradient(90deg,#22c55e,#eab308,#ef4444)}
-.powerfill{background:linear-gradient(90deg,#3b82f6,#8b5cf6,#f59e0b)}
-.statnum{text-align:right;font-size:12px;font-weight:1000}
+.stat{display:grid;grid-template-columns:65px 1fr 52px;gap:7px;align-items:center;margin-bottom:7px}
+.stat span{font-size:12px;font-weight:900}
+.bar{height:14px;background:#1f2937;border:1px solid #475569;border-radius:999px;overflow:hidden}
+.fill{height:100%;transform-origin:left;transition:.2s}
+#hpbar{background:linear-gradient(90deg,#22c55e,#eab308,#ef4444)}
+#powerbar{background:linear-gradient(90deg,#3b82f6,#8b5cf6,#f59e0b)}
+#ragebar{background:linear-gradient(90deg,#fb7185,#ef4444,#f97316)}
 
-.topchips{
-  display:flex;
-  gap:8px;
-  justify-content:flex-end;
-  margin-bottom:8px
-}
-.chip{
-  background:#111827;
-  border:1px solid #334155;
-  border-radius:12px;
-  padding:7px 10px;
-  font-size:12px;
-  font-weight:1000
-}
+.chips{display:flex;gap:6px;justify-content:flex-end;margin:9px 0;flex-wrap:wrap}
+.chip{background:#111827;border:1px solid #334155;border-radius:10px;padding:6px 9px;font-size:11px;font-weight:1000}
 
 .stage{
-  position:relative;
-  height:450px;
-  overflow:hidden;
-  border-radius:24px;
-  border:1px solid #344155;
-  background:
-    radial-gradient(circle at 50% 28%,rgba(255,255,255,.08),transparent 28%),
-    linear-gradient(#18243b 0 62%,#4a1f22 62% 64%,#101827 64% 100%);
-  user-select:none
+height:470px;position:relative;overflow:hidden;
+border-radius:25px;border:1px solid #475569;
+background:
+radial-gradient(circle at 50% 5%,#ffffff44,transparent 17%),
+radial-gradient(circle at 15% 12%,#3b82f644,transparent 18%),
+radial-gradient(circle at 85% 12%,#ef444444,transparent 18%),
+linear-gradient(#101827 0 58%,#3f1d22 58% 61%,#0b1220 61%)
 }
-.rope{
-  position:absolute;left:-10px;right:-10px;
-  height:4px;background:#d1d5db;opacity:.62
+.light{
+position:absolute;left:50%;top:-60px;transform:translateX(-50%);
+width:220px;height:250px;
+background:linear-gradient(180deg,#ffffff22,transparent);
+clip-path:polygon(38% 0,62% 0,100% 100%,0 100%)
 }
+.crowd{
+position:absolute;left:0;right:0;bottom:0;height:145px;opacity:.6;
+background:
+radial-gradient(circle at 5% 35%,#64748b 0 7px,transparent 8px),
+radial-gradient(circle at 15% 48%,#475569 0 8px,transparent 9px),
+radial-gradient(circle at 25% 32%,#64748b 0 7px,transparent 8px),
+radial-gradient(circle at 38% 50%,#475569 0 8px,transparent 9px),
+radial-gradient(circle at 50% 30%,#64748b 0 7px,transparent 8px),
+radial-gradient(circle at 63% 48%,#475569 0 8px,transparent 9px),
+radial-gradient(circle at 76% 31%,#64748b 0 7px,transparent 8px),
+radial-gradient(circle at 88% 48%,#475569 0 8px,transparent 9px),
+radial-gradient(circle at 96% 33%,#64748b 0 7px,transparent 8px)
+}
+.rope{position:absolute;left:-5%;width:110%;height:5px;background:#e5e7eb;opacity:.7}
 .r1{top:67%}.r2{top:77%}.r3{top:87%}
 
 .target{
-  position:absolute;
-  left:50%;top:48%;
-  transform:translate(-50%,-50%);
-  width:260px;height:310px;
-  transition:left .18s ease,transform .18s ease
+position:absolute;width:285px;height:330px;
+left:50%;top:49%;transform:translate(-50%,-50%);
+transition:left .17s,transform .17s
 }
-.target.dodge-left{
-  left:30%;
-  transform:translate(-50%,-50%) rotate(-6deg)
+.target.dl{left:28%;transform:translate(-50%,-50%) rotate(-8deg)}
+.target.dr{left:72%;transform:translate(-50%,-50%) rotate(8deg)}
+
+.body{
+position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+width:225px;height:180px;border-radius:100px 100px 25px 25px;
+background:linear-gradient(#596274,#252c3a);
+border:4px solid #7c8799;
+box-shadow:inset 0 12px 20px #ffffff15,inset 0 -15px 25px #0008
 }
-.target.dodge-right{
-  left:70%;
-  transform:translate(-50%,-50%) rotate(6deg)
+.chest{
+position:absolute;left:50%;top:20px;transform:translateX(-50%);
+width:100px;height:125px;border-radius:50px;
+background:linear-gradient(#d9a37b,#955e45);opacity:.55
 }
-.target.wobble{animation:wobble .45s ease}
-@keyframes wobble{
-  0%,100%{transform:translate(-50%,-50%) rotate(0)}
-  25%{transform:translate(-53%,-50%) rotate(-4deg)}
-  60%{transform:translate(-47%,-50%) rotate(5deg)}
+.shoulder{
+position:absolute;top:25px;width:72px;height:90px;
+background:linear-gradient(#cb9670,#87563f);border-radius:50%
+}
+.sl{left:-27px;transform:rotate(18deg)}
+.sr{right:-27px;transform:rotate(-18deg)}
+.neck{
+position:absolute;left:50%;top:121px;transform:translateX(-50%);
+width:65px;height:58px;background:#b97859;border-radius:20px
 }
 
-.torso{
-  position:absolute;
-  left:50%;bottom:8px;
-  transform:translateX(-50%);
-  width:215px;height:160px;
-  border-radius:90px 90px 28px 28px;
-  background:linear-gradient(#626b7d,#2d3648);
-  border:4px solid #7a879c
-}
-.neck{
-  position:absolute;
-  left:50%;top:118px;
-  transform:translateX(-50%);
-  width:62px;height:55px;
-  border-radius:20px;
-  background:#bc8061
-}
-.headwrap{
-  position:absolute;
-  left:50%;top:18px;
-  transform:translateX(-50%);
-  width:164px;height:164px;
-  z-index:4
+.headbox{
+position:absolute;width:170px;height:170px;
+left:50%;top:12px;transform:translateX(-50%);z-index:5
 }
 .head{
-  position:absolute;
-  inset:0;
-  border-radius:50%;
-  overflow:hidden;
-  background:#374151;
-  border:5px solid #e5e7eb;
-  box-shadow:0 12px 30px #0008
+position:absolute;inset:0;border-radius:50%;overflow:hidden;
+border:5px solid #e5e7eb;background:#374151;
+box-shadow:0 12px 30px #000a;
+transform-origin:center
 }
-.head img{
-  width:100%;
-  height:100%;
-  object-fit:cover
+.head img{width:100%;height:100%;object-fit:cover}
+
+.head.leftHit{animation:leftFace .22s}
+.head.rightHit{animation:rightFace .22s}
+.head.superHit{animation:superFace .36s}
+
+@keyframes leftFace{
+0%{transform:none}
+45%{transform:translateX(-15px) rotate(-9deg) scaleX(.78) scaleY(1.1) skewY(-4deg)}
+100%{transform:none}
+}
+@keyframes rightFace{
+0%{transform:none}
+45%{transform:translateX(15px) rotate(9deg) scaleX(.78) scaleY(1.1) skewY(4deg)}
+100%{transform:none}
+}
+@keyframes superFace{
+0%{transform:none}
+30%{transform:scaleX(.6) scaleY(1.28) rotate(-7deg)}
+58%{transform:scaleX(1.28) scaleY(.72) rotate(7deg)}
+100%{transform:none}
 }
 
-.head.hit-left{animation:headLeft .2s ease-out}
-.head.hit-right{animation:headRight .2s ease-out}
-@keyframes headLeft{
-  0%{transform:rotate(0)}
-  45%{transform:translateX(-11px) rotate(-8deg)}
-  100%{transform:rotate(0)}
+.bruise{position:absolute;border-radius:50%;opacity:0;mix-blend-mode:multiply;transition:.25s}
+.b1{width:45px;height:26px;left:15px;top:73px;background:#51267aa8}
+.b2{width:48px;height:30px;right:13px;top:86px;background:#641f70a8}
+.b3{width:37px;height:22px;left:59px;top:116px;background:#77194399}
+.b4{width:31px;height:24px;right:49px;top:43px;background:#46236f99}
+.swelling{
+position:absolute;width:38px;height:22px;right:15px;top:63px;
+border-radius:50%;background:#a23a7477;filter:blur(1px);opacity:0
 }
-@keyframes headRight{
-  0%{transform:rotate(0)}
-  45%{transform:translateX(11px) rotate(8deg)}
-  100%{transform:rotate(0)}
+.stars{
+position:absolute;left:50%;top:-20px;transform:translateX(-50%);
+font-size:29px;opacity:0
 }
-
-.bruise{
-  position:absolute;
-  border-radius:50%;
-  opacity:0;
-  transition:opacity .25s ease;
-  mix-blend-mode:multiply
-}
-.b1{
-  width:42px;height:25px;
-  left:18px;top:72px;
-  background:rgba(80,40,120,.62)
-}
-.b2{
-  width:48px;height:30px;
-  right:14px;top:84px;
-  background:rgba(92,35,105,.58)
-}
-.b3{
-  width:35px;height:20px;
-  left:53px;top:112px;
-  background:rgba(110,25,70,.48)
-}
-.b4{
-  width:28px;height:22px;
-  right:48px;top:42px;
-  background:rgba(70,35,120,.5)
+.stars.go{animation:stars .8s}
+@keyframes stars{
+0%{opacity:0;transform:translateX(-50%) scale(.5)}
+25%{opacity:1}
+100%{opacity:0;transform:translateX(-50%) translateY(-40px) rotate(30deg) scale(1.3)}
 }
 
 .glove{
-  position:absolute;
-  bottom:16px;
-  width:105px;height:105px;
-  border-radius:50%;
-  z-index:8;
-  opacity:.98
+position:absolute;width:112px;height:112px;bottom:10px;
+border-radius:50%;z-index:10;
+box-shadow:inset -12px -12px 18px #0005,inset 10px 10px 15px #ffffff20;
+filter:drop-shadow(0 14px 12px #0009)
 }
-.left-glove{
-  left:-95px;
-  background:radial-gradient(circle at 38% 28%,#fb7185,#dc2626 60%,#7f1d1d);
-  border:4px solid #fecaca
+.glove:after{
+content:"";position:absolute;bottom:-18px;left:28px;right:28px;height:31px;
+background:#7f1d1d;border-radius:9px
 }
-.right-glove{
-  right:-95px;
-  background:radial-gradient(circle at 38% 28%,#93c5fd,#2563eb 60%,#1e3a8a);
-  border:4px solid #dbeafe
+.leftglove{
+left:-110px;background:radial-gradient(circle at 35% 25%,#fb7185,#dc2626 58%,#7f1d1d);
+border:5px solid #fecaca
 }
-
-.left-glove.punch{animation:leftPunch .24s}
-.right-glove.punch{animation:rightPunch .24s}
-
-@keyframes leftPunch{
-  0%{left:-95px;bottom:16px}
-  55%{left:106px;bottom:188px;transform:scale(1.1)}
-  100%{left:-95px;bottom:16px}
-}
-@keyframes rightPunch{
-  0%{right:-95px;bottom:16px}
-  55%{right:106px;bottom:188px;transform:scale(1.1)}
-  100%{right:-95px;bottom:16px}
+.rightglove{
+right:-110px;background:radial-gradient(circle at 35% 25%,#93c5fd,#2563eb 58%,#1e3a8a);
+border:5px solid #dbeafe
 }
 
-.left-glove.super{animation:leftSuper .34s}
-.right-glove.super{animation:rightSuper .34s}
-@keyframes leftSuper{
-  0%{left:-110px;bottom:0;transform:scale(.8)}
-  55%{left:112px;bottom:190px;transform:scale(1.5)}
-  100%{left:-110px;bottom:0;transform:scale(.8)}
+.leftglove.punch{animation:lp .23s}
+.rightglove.punch{animation:rp .23s}
+.leftglove.hook{animation:lh .32s}
+.rightglove.hook{animation:rh .32s}
+.leftglove.upper{animation:lu .34s}
+.rightglove.upper{animation:ru .34s}
+
+@keyframes lp{
+0%{left:-110px;bottom:10px}
+55%{left:116px;bottom:200px;transform:scale(1.18)}
+100%{left:-110px;bottom:10px}
 }
-@keyframes rightSuper{
-  0%{right:-110px;bottom:0;transform:scale(.8)}
-  55%{right:112px;bottom:190px;transform:scale(1.5)}
-  100%{right:-110px;bottom:0;transform:scale(.8)}
+@keyframes rp{
+0%{right:-110px;bottom:10px}
+55%{right:116px;bottom:200px;transform:scale(1.18)}
+100%{right:-110px;bottom:10px}
+}
+@keyframes lh{
+0%{left:-110px;bottom:50px}
+50%{left:120px;bottom:210px;transform:rotate(65deg) scale(1.3)}
+100%{left:-110px;bottom:50px}
+}
+@keyframes rh{
+0%{right:-110px;bottom:50px}
+50%{right:120px;bottom:210px;transform:rotate(-65deg) scale(1.3)}
+100%{right:-110px;bottom:50px}
+}
+@keyframes lu{
+0%{left:5px;bottom:-120px}
+55%{left:120px;bottom:205px;transform:scale(1.4)}
+100%{left:5px;bottom:-120px}
+}
+@keyframes ru{
+0%{right:5px;bottom:-120px}
+55%{right:120px;bottom:205px;transform:scale(1.4)}
+100%{right:5px;bottom:-120px}
+}
+
+.impact{
+position:absolute;left:50%;top:35%;width:130px;height:130px;
+transform:translate(-50%,-50%);opacity:0;z-index:12;
+border:6px solid white;border-radius:50%;
+box-shadow:0 0 30px white,0 0 65px #f59e0b
+}
+.impact.go{animation:impact .28s}
+@keyframes impact{
+0%{opacity:1;transform:translate(-50%,-50%) scale(.15)}
+100%{opacity:0;transform:translate(-50%,-50%) scale(1.8)}
 }
 
 .pop{
-  position:absolute;
-  z-index:13;
-  font-size:34px;
-  font-weight:1000;
-  text-shadow:0 4px 9px black;
-  animation:pop .65s ease-out forwards
+position:absolute;left:50%;top:33%;z-index:15;
+font-size:34px;font-weight:1000;text-shadow:0 4px 10px black;
+animation:pop .7s forwards
 }
 @keyframes pop{
-  0%{opacity:0;transform:translate(-50%,0) scale(.7)}
-  20%{opacity:1}
-  100%{opacity:0;transform:translate(-50%,-90px) scale(1.2)}
+0%{opacity:0;transform:translate(-50%,0) scale(.6)}
+20%{opacity:1}
+100%{opacity:0;transform:translate(-50%,-100px) scale(1.2)}
 }
-.miss{color:#93c5fd}
-.heal{color:#86efac}
+.miss{color:#93c5fd}.heal{color:#86efac}.rageText{color:#fb7185}
+
+.rageOverlay{
+position:absolute;inset:0;pointer-events:none;opacity:0;z-index:18;
+background:radial-gradient(circle,transparent 45%,#ef444444)
+}
+.rageOverlay.on{opacity:1;animation:ragepulse .5s infinite alternate}
+@keyframes ragepulse{
+to{box-shadow:inset 0 0 70px #ef444499}
+}
 
 .ko{
-  position:absolute;
-  inset:0;
-  display:none;
-  place-items:center;
-  background:#000b;
-  z-index:20;
-  font-size:66px;
-  font-weight:1000
+position:absolute;inset:0;background:#000c;z-index:30;
+display:none;place-items:center;font-size:70px;font-weight:1000
 }
 .ko.show{display:grid}
 
 .msg{
-  margin-top:10px;
-  padding:13px 14px;
-  border-radius:16px;
-  background:#0b1220;
-  border:1px solid #334155;
-  min-height:76px;
-  font-weight:850;
-  line-height:1.5
+margin-top:10px;background:#0b1220;border:1px solid #334155;
+border-radius:15px;padding:13px;min-height:76px;
+font-weight:850;line-height:1.5
 }
-
-.controls{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:10px
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.punchbtn{
+height:90px;border:0;border-radius:21px;color:white;
+font-size:18px;font-weight:1000
 }
-.punch-btn{
-  min-height:90px;
-  border:0;
-  border-radius:22px;
-  color:white;
-  font-weight:1000;
-  font-size:18px
+.leftbtn{background:linear-gradient(145deg,#f43f5e,#991b1b)}
+.rightbtn{background:linear-gradient(145deg,#60a5fa,#1d4ed8)}
+.specials{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}
+.special{
+border:1px solid #475569;border-radius:13px;padding:12px 4px;
+background:#1f2937;color:#64748b;font-weight:1000
 }
-.left-btn{background:linear-gradient(145deg,#f43f5e,#b91c1c)}
-.right-btn{background:linear-gradient(145deg,#60a5fa,#1d4ed8)}
-
-.power-btn{
-  width:100%;
-  margin-top:10px;
-  min-height:70px;
-  background:#1f2937;
-  color:#64748b
+.special.ready{
+background:linear-gradient(135deg,#f59e0b,#dc2626);
+color:white;border-color:#fbbf24;box-shadow:0 0 17px #f59e0b66
 }
-.power-btn.ready{
-  background:linear-gradient(135deg,#f59e0b,#dc2626);
-  color:white;
-  box-shadow:0 0 22px #f59e0b88
+.ragebtn{
+width:100%;margin-top:8px;border:1px solid #475569;border-radius:14px;
+padding:14px;background:#1f2937;color:#64748b;font-weight:1000
 }
-
-.toggleline{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  margin-top:10px
+.ragebtn.ready{
+background:linear-gradient(135deg,#ef4444,#7f1d1d);
+color:white;border-color:#fb7185;box-shadow:0 0 20px #ef444477
 }
-.toggle{
-  border:1px solid #334155;
-  border-radius:999px;
-  padding:8px 11px;
-  background:#111827;
-  color:#cbd5e1;
-  font-size:12px;
-  font-weight:900
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.actions button{
+border:0;border-radius:13px;padding:12px;color:white;font-weight:900
 }
-.toggle.on{color:#86efac}
-
-.bottom-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:9px
-}
-.secondary{background:#202b40}
-.finish{background:#15803d}
+.reset{background:#273449}.finish{background:#15803d}
 .result{
-  display:none;
-  margin-top:10px;
-  background:#052e16;
-  border:1px solid #166534;
-  padding:14px;
-  border-radius:16px
-}
-.tip{
-  font-size:11px;
-  color:#64748b;
-  text-align:center;
-  margin-top:9px
+display:none;background:#052e16;border:1px solid #166534;
+border-radius:14px;padding:13px;margin-top:10px;line-height:1.6
 }
 </style>
 </head>
 
 <body>
 
-<div id="app" class="app">
+<div class="app" id="app">
 
-<div class="logo">
-<h1>🥊 STRESS PUNCH v3</h1>
-<small>ARCADE</small>
-</div>
+<h1>🥊 STRESS PUNCH v4</h1>
 
 <section id="setup" class="panel">
 
-<div class="row">
 <div class="label">1. 상대 얼굴 사진</div>
-<label class="file-btn" for="photo">📷 사진 선택</label>
+
+<label class="filebtn" for="photo">
+📷 사진 선택
+</label>
+
 <input id="photo" type="file" accept="image/*">
-<div id="fileName" class="file-name">선택된 사진 없음</div>
-</div>
 
-<div class="row">
+<div id="filename">선택된 사진 없음</div>
+
 <div class="label">2. 왜 화났어?</div>
-<textarea id="reason" maxlength="180"
-placeholder="예: 내 말을 계속 무시해서 열받음"></textarea>
-</div>
 
-<button id="start" class="btn start">게임 시작 🔥</button>
+<textarea id="reason"
+placeholder="예: 내 말을 계속 무시해서 열받음"></textarea>
+
+<button id="start" class="start">
+게임 시작 🔥
+</button>
 
 </section>
 
-<section id="game" class="game">
+<section id="game">
 
-<div class="stats">
-
-<div class="statrow">
-<div class="statlabel">상대 HP</div>
-<div class="bar"><div id="hpFill" class="fill hpfill"></div></div>
-<div id="hpNum" class="statnum">100</div>
+<div class="stat">
+<span>상대 HP</span>
+<div class="bar"><div id="hpbar" class="fill"></div></div>
+<span id="hpnum">100</span>
 </div>
 
-<div class="statrow">
-<div class="statlabel">POWER</div>
-<div class="bar">
-<div id="powerFill" class="fill powerfill"
-style="transform:scaleX(0)"></div>
-</div>
-<div id="powerNum" class="statnum">0%</div>
+<div class="stat">
+<span>POWER</span>
+<div class="bar"><div id="powerbar" class="fill"></div></div>
+<span id="powernum">0%</span>
 </div>
 
+<div class="stat">
+<span>RAGE</span>
+<div class="bar"><div id="ragebar" class="fill"></div></div>
+<span id="ragenum">0%</span>
 </div>
 
-<div class="topchips">
+<div class="chips">
 <div class="chip"><span id="hits">0</span> HIT</div>
 <div class="chip">x<span id="combo">0</span> COMBO</div>
 <div class="chip"><span id="dodges">0</span> DODGE</div>
+<div class="chip"><span id="score">0</span> PTS</div>
 </div>
 
-<div id="stage" class="stage">
+<div class="stage" id="stage">
+
+<div class="light"></div>
+<div class="crowd"></div>
 
 <div class="rope r1"></div>
 <div class="rope r2"></div>
@@ -429,10 +369,15 @@ style="transform:scaleX(0)"></div>
 
 <div id="target" class="target">
 
-<div class="torso"></div>
+<div class="body">
+<div class="chest"></div>
+<div class="shoulder sl"></div>
+<div class="shoulder sr"></div>
+</div>
+
 <div class="neck"></div>
 
-<div class="headwrap">
+<div class="headbox">
 
 <div id="head" class="head">
 <img id="face">
@@ -443,42 +388,75 @@ style="transform:scaleX(0)"></div>
 <div id="b3" class="bruise b3"></div>
 <div id="b4" class="bruise b4"></div>
 
-</div>
+<div id="swelling" class="swelling"></div>
+
+<div id="stars" class="stars">
+⭐💫⭐
 </div>
 
-<div id="leftGlove" class="glove left-glove"></div>
-<div id="rightGlove" class="glove right-glove"></div>
+</div>
 
-<div id="ko" class="ko">K.O.</div>
+</div>
+
+<div id="leftglove" class="glove leftglove"></div>
+<div id="rightglove" class="glove rightglove"></div>
+
+<div id="impact" class="impact"></div>
+
+<div id="rageOverlay" class="rageOverlay"></div>
+
+<div id="ko" class="ko">
+K.O.
+</div>
 
 </div>
 
 <div id="message" class="msg">
-왼손이나 오른손 펀치를 눌러봐.
+왼손/오른손을 섞어서 공격해봐.
 </div>
 
 <div class="controls">
-<button id="leftBtn" class="punch-btn left-btn">
-🥊 왼손 펀치
+
+<button id="left" class="punchbtn leftbtn">
+🥊 왼손
 </button>
 
-<button id="rightBtn" class="punch-btn right-btn">
-🥊 오른손 펀치
+<button id="right" class="punchbtn rightbtn">
+🥊 오른손
 </button>
+
 </div>
 
-<button id="powerBtn" class="btn power-btn" disabled>
-⚡ POWER PUNCH
+<div class="specials">
+
+<button id="straight" class="special" disabled>
+⚡ 스트레이트
 </button>
 
-<div class="toggleline">
-<button id="soundToggle" class="toggle on">🔊 소리 ON</button>
-<button id="vibeToggle" class="toggle on">📳 진동 ON</button>
+<button id="hook" class="special" disabled>
+🌀 훅
+</button>
+
+<button id="upper" class="special" disabled>
+⬆️ 어퍼컷
+</button>
+
 </div>
 
-<div class="bottom-actions">
-<button id="reset" class="btn secondary">다시 설정</button>
-<button id="finish" class="btn finish">이제 됐다 😌</button>
+<button id="rage" class="ragebtn" disabled>
+🔥 RAGE MODE
+</button>
+
+<div class="actions">
+
+<button id="reset" class="reset">
+다시 설정
+</button>
+
+<button id="finish" class="finish">
+이제 됐다 😌
+</button>
+
 </div>
 
 <div id="result" class="result"></div>
@@ -488,62 +466,28 @@ style="transform:scaleX(0)"></div>
 </div>
 
 <script>
-const $=id=>document.getElementById(id);
 
-const photo=$("photo");
-const fileName=$("fileName");
-const reasonInput=$("reason");
+const $=x=>document.getElementById(x);
 
-const setup=$("setup");
-const game=$("game");
-
-const face=$("face");
-const target=$("target");
-const head=$("head");
-
-const leftGlove=$("leftGlove");
-const rightGlove=$("rightGlove");
-
-const hpFill=$("hpFill");
-const hpNum=$("hpNum");
-
-const powerFill=$("powerFill");
-const powerNum=$("powerNum");
-
-const hitsEl=$("hits");
-const comboEl=$("combo");
-const dodgesEl=$("dodges");
-
-const message=$("message");
-
-const powerBtn=$("powerBtn");
-
-const b1=$("b1");
-const b2=$("b2");
-const b3=$("b3");
-const b4=$("b4");
-
-const ko=$("ko");
-const result=$("result");
-
-let imageData="";
+let image="";
 let reason="";
 
 let hp=100;
 let power=0;
+let rage=0;
 
 let hits=0;
 let combo=0;
 let dodges=0;
+let score=0;
 
-let consecutiveDodges=0;
+let lastHit=0;
+let dodgeStreak=0;
 
+let rageMode=false;
 let finished=false;
 
-let soundOn=true;
-let vibeOn=true;
-
-let audioCtx=null;
+let audio=null;
 
 const taunts=[
 "어딜 때리냐 ㅋㅋ",
@@ -555,256 +499,272 @@ const taunts=[
 "바람만 지나갔는데?"
 ];
 
-photo.addEventListener("change",()=>{
+const weakTaunts=[
+"잠깐만;;",
+"야 잠시만",
+"아니 이건 좀;;",
+"잠깐 얘기 좀 하자"
+];
 
-const f=photo.files[0];
+$("photo").onchange=e=>{
 
-if(!f)return;
+const file=e.target.files[0];
 
-fileName.textContent=f.name;
+if(!file)return;
+
+$("filename").innerText=file.name;
 
 const reader=new FileReader();
 
-reader.onload=e=>{
-imageData=e.target.result;
+reader.onload=x=>{
+image=x.target.result;
 };
 
-reader.readAsDataURL(f);
+reader.readAsDataURL(file);
 
-});
+};
 
-function unlockAudio(){
+function sound(strong=false){
 
-if(!audioCtx){
+try{
 
-audioCtx=new(
+if(!audio)
+audio=new(
 window.AudioContext||
 window.webkitAudioContext
 )();
 
-}
+if(audio.state==="suspended")
+audio.resume();
 
-if(audioCtx.state==="suspended"){
-audioCtx.resume();
-}
+const o=audio.createOscillator();
+const g=audio.createGain();
 
-}
+o.type="triangle";
 
-function punchSound(strong=false){
-
-if(!soundOn)return;
-
-unlockAudio();
-
-const now=audioCtx.currentTime;
-
-const osc=audioCtx.createOscillator();
-const gain=audioCtx.createGain();
-
-osc.type="triangle";
-
-osc.frequency.setValueAtTime(
-strong?65:90,
-now
+o.frequency.setValueAtTime(
+strong?60:90,
+audio.currentTime
 );
 
-osc.frequency.exponentialRampToValueAtTime(
-40,
-now+.1
+o.frequency.exponentialRampToValueAtTime(
+35,
+audio.currentTime+.12
 );
 
-gain.gain.setValueAtTime(
-strong?.35:.2,
-now
+g.gain.setValueAtTime(
+strong?.35:.18,
+audio.currentTime
 );
 
-gain.gain.exponentialRampToValueAtTime(
+g.gain.exponentialRampToValueAtTime(
 .001,
-now+.15
+audio.currentTime+.15
 );
 
-osc.connect(gain);
-gain.connect(audioCtx.destination);
+o.connect(g);
+g.connect(audio.destination);
 
-osc.start();
-osc.stop(now+.16);
+o.start();
+o.stop(audio.currentTime+.16);
+
+}catch(e){}
 
 }
 
-function vibration(strong=false){
-
-if(!vibeOn)return;
+function vibe(strong=false){
 
 if(!navigator.vibrate)return;
 
-if(strong){
+try{
 
-navigator.vibrate([
-50,
-20,
-70
-]);
-
-}else{
-
-navigator.vibrate(30);
-
-}
-
-}
-
-function updateUI(){
-
-hp=Math.max(
-0,
-Math.min(100,hp)
+navigator.vibrate(
+strong
+?[60,20,75]
+:30
 );
 
-power=Math.max(
-0,
-Math.min(100,power)
-);
-
-hpFill.style.transform=
-"scaleX("+(hp/100)+")";
-
-powerFill.style.transform=
-"scaleX("+(power/100)+")";
-
-hpNum.textContent=
-Math.round(hp);
-
-powerNum.textContent=
-Math.round(power)+"%";
-
-hitsEl.textContent=hits;
-
-comboEl.textContent=combo;
-
-dodgesEl.textContent=dodges;
-
-if(power>=100){
-
-powerBtn.disabled=false;
-
-powerBtn.classList.add("ready");
-
-powerBtn.textContent=
-"⚡ POWER PUNCH 준비 완료!";
-
-}else{
-
-powerBtn.disabled=true;
-
-powerBtn.classList.remove("ready");
-
-powerBtn.textContent=
-"⚡ POWER PUNCH "+Math.round(power)+"%";
+}catch(e){}
 
 }
 
-}
+function pop(text,type=""){
 
-function updateBruises(){
+const el=document.createElement("div");
 
-b1.style.opacity=
-hp<=80?1:0;
+el.className="pop "+type;
 
-b2.style.opacity=
-hp<=60?1:0;
+el.innerText=text;
 
-b3.style.opacity=
-hp<=40?1:0;
-
-b4.style.opacity=
-hp<=20?1:0;
-
-}
-
-function pop(text,cls=""){
-
-const p=
-document.createElement("div");
-
-p.className=
-"pop "+cls;
-
-p.textContent=text;
-
-p.style.left="50%";
-p.style.top="34%";
-
-$("stage").appendChild(p);
+$("stage").appendChild(el);
 
 setTimeout(()=>{
-p.remove();
+el.remove();
 },700);
 
 }
 
-function animateGlove(side,strong=false){
+function update(){
 
-const glove=
-side==="left"
-?leftGlove
-:rightGlove;
+hp=Math.max(0,Math.min(100,hp));
+power=Math.max(0,Math.min(100,power));
+rage=Math.max(0,Math.min(100,rage));
 
-glove.classList.remove(
-"punch",
-"super"
+$("hpbar").style.transform=
+`scaleX(${hp/100})`;
+
+$("powerbar").style.transform=
+`scaleX(${power/100})`;
+
+$("ragebar").style.transform=
+`scaleX(${rage/100})`;
+
+$("hpnum").innerText=
+Math.round(hp);
+
+$("powernum").innerText=
+Math.round(power)+"%";
+
+$("ragenum").innerText=
+Math.round(rage)+"%";
+
+$("hits").innerText=hits;
+$("combo").innerText=combo;
+$("dodges").innerText=dodges;
+$("score").innerText=score;
+
+const ready=
+power>=100&&!finished;
+
+["straight","hook","upper"]
+.forEach(id=>{
+
+$(id).disabled=!ready;
+
+$(id).classList.toggle(
+"ready",
+ready
 );
 
-void glove.offsetWidth;
+});
 
-glove.classList.add(
-strong
-?"super"
-:"punch"
+const rageReady=
+rage>=100&&!rageMode&&!finished;
+
+$("rage").disabled=!rageReady;
+
+$("rage").classList.toggle(
+"ready",
+rageReady
 );
 
 }
 
-function animateHead(side){
+function damageFace(){
 
-head.className="head";
+$("b1").style.opacity=
+hp<=82?1:0;
 
-void head.offsetWidth;
+$("b2").style.opacity=
+hp<=65?1:0;
 
-head.classList.add(
+$("b3").style.opacity=
+hp<=45?1:0;
+
+$("b4").style.opacity=
+hp<=25?1:0;
+
+$("swelling").style.opacity=
+hp<=35?1:0;
+
+}
+
+function glove(side,type="punch"){
+
+const g=
 side==="left"
-?"hit-right"
-:"hit-left"
+?$("leftglove")
+:$("rightglove");
+
+g.classList.remove(
+"punch","hook","upper"
+);
+
+void g.offsetWidth;
+
+g.classList.add(type);
+
+}
+
+function faceHit(side,strong=false){
+
+const h=$("head");
+
+h.className="head";
+
+void h.offsetWidth;
+
+if(strong){
+
+h.classList.add("superHit");
+
+$("stars").classList.remove("go");
+
+void $("stars").offsetWidth;
+
+$("stars").classList.add("go");
+
+}else{
+
+h.classList.add(
+side==="left"
+?"rightHit"
+:"leftHit"
 );
 
 }
 
-function dodge(){
+}
+
+function impact(){
+
+$("impact").classList.remove("go");
+
+void $("impact").offsetWidth;
+
+$("impact").classList.add("go");
+
+}
+
+function dodge(side){
 
 dodges++;
 
 combo=0;
 
-consecutiveDodges++;
+dodgeStreak++;
 
 hp+=3;
 
-power+=15;
+power+=8;
+
+rage+=22;
 
 const dir=
 Math.random()>.5
-?"dodge-left"
-:"dodge-right";
+?"dl":"dr";
 
-target.classList.add(dir);
+$("target").classList.add(dir);
 
 setTimeout(()=>{
 
-target.classList.remove(
-"dodge-left",
-"dodge-right"
+$("target").classList.remove(
+"dl","dr"
 );
 
-},280);
+},270);
+
+glove(side);
 
 pop(
 "MISS!",
@@ -818,21 +778,24 @@ pop(
 "heal"
 );
 
-},120);
+},100);
 
-const taunt=
-taunts[
+const list=
+hp<30
+?weakTaunts
+:taunts;
+
+const line=
+list[
 Math.floor(
-Math.random()*taunts.length
+Math.random()*list.length
 )
 ];
 
-message.textContent=
-'😏 "'+
-taunt+
-'" — 피하면서 HP 회복!';
+$("message").innerText=
+`😏 "${line}" — 피하면서 HP +3! RAGE +22%`;
 
-updateUI();
+update();
 
 }
 
@@ -840,26 +803,19 @@ function punch(side){
 
 if(finished)return;
 
-unlockAudio();
+let dodgeChance=
+rageMode?0:.22;
 
-let dodgeChance=.22;
+if(hp<=50)
+dodgeChance=
+rageMode?0:.14;
 
-if(hp<=50){
-dodgeChance=.15;
-}
+if(hp<=25)
+dodgeChance=
+rageMode?0:.07;
 
-if(hp<=25){
-dodgeChance=.08;
-}
-
-if(consecutiveDodges>=2){
+if(dodgeStreak>=2)
 dodgeChance=0;
-}
-
-animateGlove(
-side,
-false
-);
 
 if(
 Math.random()
@@ -867,128 +823,204 @@ Math.random()
 dodgeChance
 ){
 
-dodge();
+dodge(side);
 
 return;
 
 }
 
-consecutiveDodges=0;
+dodgeStreak=0;
 
-combo++;
+const now=Date.now();
 
-hits++;
+combo=
+now-lastHit<680
+?combo+1
+:1;
+
+lastHit=now;
 
 const critical=
 combo%7===0;
 
-const damage=
-critical?8:4;
+let dmg=
+rageMode?6:4;
 
-hp-=damage;
+if(critical)
+dmg+=4;
+
+hp-=dmg;
 
 power+=
-critical?14:10;
+critical?16:11;
 
-animateHead(side);
+rage+=
+critical?10:6;
 
-punchSound(
+hits++;
+
+score+=
+dmg*25+
+combo*3;
+
+glove(side);
+
+faceHit(
+side,
 critical
 );
 
-vibration(
+impact();
+
+sound(
 critical
 );
 
-if(critical){
-
-pop(
-"CRITICAL!"
+vibe(
+critical
 );
 
-message.textContent=
-"🔥 "+combo+
-" COMBO! 크리티컬 -"+
-damage+
-" HP!";
-
-}else{
-
 pop(
-["퍽!","퐉!","POW!","BAM!"]
+critical
+?"CRITICAL!"
+:["퍽!","퐉!","POW!","BAM!"]
 [Math.floor(Math.random()*4)]
 );
 
-message.textContent=
-"정통으로 들어갔다! -"+
-damage+
-" HP";
+if(reason&&hits<5){
+
+$("message").innerText=
+`"${reason}" — 그 답답함만 여기다 날려.`;
+
+}else if(critical){
+
+$("message").innerText=
+`🔥 ${combo} COMBO! CRITICAL -${dmg} HP`;
+
+}else{
+
+$("message").innerText=
+`정통으로 들어갔다! -${dmg} HP`;
 
 }
 
-updateBruises();
+damageFace();
 
-updateUI();
+update();
 
 checkKO();
 
 }
 
-function powerPunch(){
+function special(type){
 
-if(power<100)return;
-
-if(finished)return;
+if(
+finished||
+power<100
+)return;
 
 power=0;
 
-const damage=24;
+let dmg=22;
+let text="SUPER STRAIGHT";
+let animation="punch";
 
-hp-=damage;
+if(type==="hook"){
+
+dmg=26;
+text="HEAVY HOOK";
+animation="hook";
+
+}
+
+if(type==="upper"){
+
+dmg=24;
+text="UPPERCUT";
+animation="upper";
+
+}
+
+const side=
+Math.random()>.5
+?"left":"right";
+
+hp-=dmg;
 
 hits++;
 combo++;
 
-const side=
-Math.random()>.5
-?"left"
-:"right";
+score+=
+dmg*40+250;
 
-animateGlove(
+glove(
+side,
+animation
+);
+
+faceHit(
 side,
 true
 );
 
-animateHead(side);
+impact();
 
-target.classList.add(
-"wobble"
+sound(true);
+vibe(true);
+
+pop(
+"💥 "+text+"!"
 );
+
+$("message").innerText=
+`⚡ ${text}! 회피 불가! -${dmg} HP`;
+
+damageFace();
+
+update();
+
+checkKO();
+
+}
+
+function rageStart(){
+
+if(
+rage<100||
+rageMode||
+finished
+)return;
+
+rage=0;
+
+rageMode=true;
+
+$("rageOverlay")
+.classList.add("on");
+
+pop(
+"🔥 RAGE MODE!",
+"rageText"
+);
+
+$("message").innerText=
+"🔥 5초 동안 상대 회피 불가 + 펀치 데미지 강화!";
+
+update();
 
 setTimeout(()=>{
 
-target.classList.remove(
-"wobble"
-);
+rageMode=false;
 
-},500);
+$("rageOverlay")
+.classList.remove("on");
 
-punchSound(true);
+$("message").innerText=
+"RAGE 종료!";
 
-vibration(true);
+update();
 
-pop(
-"💥 SUPER HIT!"
-);
-
-message.textContent=
-"⚡ POWER PUNCH! 회피 불가! -24 HP!";
-
-updateBruises();
-
-updateUI();
-
-checkKO();
+},5000);
 
 }
 
@@ -1000,33 +1032,32 @@ hp=0;
 
 finished=true;
 
-ko.classList.add(
-"show"
-);
+update();
 
-message.textContent=
+$("ko")
+.classList.add("show");
+
+$("message").innerText=
 "K.O.! 오늘 스트레스는 여기까지.";
 
-result.style.display=
+let grade="C";
+
+if(score>=2500)grade="B";
+if(score>=4500)grade="A";
+if(score>=6500)grade="S";
+
+$("result").style.display=
 "block";
 
-result.innerHTML=
-"🥊 <b>"+
-hits+
-" HIT / "+
-dodges+
-"회 회피당함</b><br>"+
-"POWER까지 모아서 결국 KO!";
-
-updateUI();
+$("result").innerHTML=
+`🥊 <b>${hits} HIT / ${dodges} DODGE</b><br>
+점수 ${score}점 · 등급 <b>${grade}</b>`;
 
 }
 
-$("start").addEventListener(
-"click",
-()=>{
+$("start").onclick=()=>{
 
-if(!imageData){
+if(!image){
 
 alert(
 "먼저 얼굴 사진을 선택해줘."
@@ -1036,150 +1067,97 @@ return;
 
 }
 
-unlockAudio();
-
 reason=
-reasonInput.value.trim();
+$("reason").value.trim();
 
-face.src=imageData;
+$("face").src=image;
 
 hp=100;
 power=0;
+rage=0;
 
 hits=0;
 combo=0;
 dodges=0;
+score=0;
 
-consecutiveDodges=0;
+dodgeStreak=0;
 
+rageMode=false;
 finished=false;
 
-[b1,b2,b3,b4]
-.forEach(x=>{
-x.style.opacity=0;
+$("ko").classList.remove("show");
+
+$("result").style.display="none";
+
+["b1","b2","b3","b4","swelling"]
+.forEach(id=>{
+$(id).style.opacity=0;
 });
 
-ko.classList.remove(
-"show"
-);
+$("setup").style.display="none";
 
-result.style.display=
-"none";
+$("game").style.display="block";
 
-message.textContent=
+$("message").innerText=
 reason
-?'“'+reason+'” 때문에 쌓였지? 잡아보자. 근데 얘가 가끔 피한다.'
-:"잡아보자. 근데 얘가 가끔 피하면서 놀린다.";
+?`"${reason}" 때문에 쌓였지? 잡아보자. 근데 얘가 피하면서 놀린다.`
+:"잡아보자. 근데 얘가 피하면서 놀린다.";
 
-setup.style.display=
-"none";
+update();
 
-game.style.display=
-"block";
+window.scrollTo(0,0);
 
-updateUI();
+};
 
-});
-
-$("leftBtn")
-.addEventListener(
-"pointerdown",
-e=>{
+$("left").onpointerdown=e=>{
 
 e.preventDefault();
 
-punch(
-"left"
-);
+punch("left");
 
-});
+};
 
-$("rightBtn")
-.addEventListener(
-"pointerdown",
-e=>{
+$("right").onpointerdown=e=>{
 
 e.preventDefault();
 
-punch(
-"right"
-);
+punch("right");
 
-});
+};
 
-powerBtn
-.addEventListener(
-"pointerdown",
-e=>{
+$("straight").onclick=()=>special("straight");
 
-e.preventDefault();
+$("hook").onclick=()=>special("hook");
 
-powerPunch();
+$("upper").onclick=()=>special("upper");
 
-});
+$("rage").onclick=rageStart;
 
-$("soundToggle")
-.addEventListener(
-"click",
-()=>{
+$("reset").onclick=()=>{
 
-soundOn=
-!soundOn;
+$("game").style.display="none";
 
-$("soundToggle")
-.textContent=
-soundOn
-?"🔊 소리 ON"
-:"🔇 소리 OFF";
+$("setup").style.display="block";
 
-});
+};
 
-$("vibeToggle")
-.addEventListener(
-"click",
-()=>{
-
-vibeOn=
-!vibeOn;
-
-$("vibeToggle")
-.textContent=
-vibeOn
-?"📳 진동 ON"
-:"📴 진동 OFF";
-
-});
-
-$("reset")
-.addEventListener(
-"click",
-()=>{
-
-game.style.display=
-"none";
-
-setup.style.display=
-"block";
-
-});
-
-$("finish")
-.addEventListener(
-"click",
-()=>{
+$("finish").onclick=()=>{
 
 finished=true;
 
-result.style.display=
-"block";
+$("result").style.display="block";
 
-result.innerHTML=
-"😌 <b>"+
-hits+
-" HIT 후 종료</b><br>"+
-"오늘 스트레스는 여기까지만.";
+$("result").innerHTML=
+`😌 <b>${hits} HIT 후 종료</b><br>
+오늘 스트레스는 여기까지만.`;
 
-});
+$("message").innerText=
+"종료! 기분 전환하고 가자.";
+
+};
+
+update();
 
 </script>
 
