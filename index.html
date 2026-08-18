@@ -2,252 +2,333 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0b1020">
-<title>Stress Punch</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#090d16">
+<title>STRESS PUNCH</title>
 <style>
+:root{
+  --bg:#090d16; --panel:#111827; --line:#273449; --text:#f8fafc; --muted:#94a3b8;
+  --red:#ef4444; --red2:#991b1b; --blue:#3b82f6; --blue2:#1d4ed8; --gold:#f59e0b;
+}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:#0b1020;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
-body{min-height:100vh}
+html,body{margin:0;min-height:100%;background:radial-gradient(circle at 50% 0,#172033 0,#090d16 55%,#05070d 100%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
 button,input,textarea{font:inherit}
-.app{max-width:520px;margin:auto;padding:18px 14px 36px}
-h1{margin:4px 0 6px;font-size:27px}
-.sub{color:#a7b0c0;font-size:13px;margin-bottom:14px}
-.panel{background:#121a2b;border:1px solid #25314a;border-radius:20px;padding:15px}
-.row{margin-bottom:14px}
-.label{font-size:13px;font-weight:800;margin-bottom:7px}
-textarea{width:100%;min-height:92px;border-radius:14px;border:1px solid #33415c;background:#0d1423;color:#fff;padding:12px;resize:none}
-.btn{width:100%;border:0;border-radius:15px;padding:14px 15px;font-weight:900}
-.primary{background:#ef4444;color:#fff}
-.secondary{background:#243047;color:#fff}
-.file{display:block;text-align:center;background:#243047;border-radius:14px;padding:13px;font-weight:800}
+button{touch-action:manipulation}
+.app{width:min(100%,540px);margin:0 auto;padding:14px 14px 34px}
+.logo{display:flex;align-items:end;justify-content:space-between;margin:4px 0 12px}
+.logo h1{margin:0;font-size:28px;font-weight:1000;letter-spacing:-.06em}
+.logo small{color:#fca5a5;font-weight:800}
+.panel{background:rgba(17,24,39,.94);border:1px solid var(--line);border-radius:20px;padding:15px;box-shadow:0 24px 70px #0007}
+.label{font-size:13px;font-weight:900;margin:0 0 7px}
+.row{margin-bottom:13px}
+.file-btn{display:block;background:#1f2937;border:1px solid #374151;border-radius:14px;padding:13px;text-align:center;font-weight:900;cursor:pointer}
 input[type=file]{display:none}
-.filename{font-size:12px;color:#93a0b5;margin-top:7px;word-break:break-all}
-.note{font-size:11px;color:#7f8ba0;line-height:1.5;margin-top:8px}
+.file-name{font-size:12px;color:var(--muted);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+textarea{width:100%;height:92px;resize:none;background:#0b1220;border:1px solid #334155;border-radius:14px;color:#fff;padding:12px;outline:none}
+textarea:focus{border-color:#64748b}
+.btn{border:0;border-radius:15px;padding:14px;font-weight:1000;color:#fff;cursor:pointer}
+.start{width:100%;background:linear-gradient(135deg,#ef4444,#b91c1c)}
 .game{display:none}
-.hud{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.bar{height:13px;flex:1;background:#202b40;border-radius:999px;overflow:hidden}
-.barfill{height:100%;width:100%;background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444);transform-origin:left}
-.hitcount{font-size:14px;font-weight:900;min-width:66px;text-align:right}
-.stage{position:relative;height:430px;border-radius:24px;overflow:hidden;background:linear-gradient(#1a2944 0 64%,#32191b 64% 67%,#121a2b 67% 100%);border:1px solid #34425e;touch-action:manipulation}
-.rope{position:absolute;left:0;right:0;height:4px;background:#dbe3ef;opacity:.65}
-.r1{top:67%}.r2{top:77%}.r3{top:87%}
-.person{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);width:220px;text-align:center}
-.head{width:155px;height:155px;margin:auto;border-radius:50%;overflow:hidden;border:5px solid #e5e7eb;background:#303b51;box-shadow:0 12px 24px #0008;transform-origin:center}
-.head img{width:100%;height:100%;object-fit:cover}
-.bodyshape{width:205px;height:125px;margin:-10px auto 0;border-radius:70px 70px 20px 20px;background:#2b3548;border:4px solid #546176}
-.glove{position:absolute;width:92px;height:92px;border-radius:50%;background:radial-gradient(circle at 35% 25%,#fb7185,#ef4444 55%,#991b1b);border:4px solid #fecaca;pointer-events:none;opacity:0;z-index:5;box-shadow:0 12px 25px #0007}
-.glove.fire{animation:punch .22s ease-out}
-@keyframes punch{0%{opacity:0;transform:translate(var(--sx),90px) scale(.75)}45%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(0,0) scale(1.12)}}
-.head.hit{animation:hit .2s ease-out}
-@keyframes hit{0%{transform:rotate(0)}45%{transform:rotate(var(--rot)) translateX(var(--dx))}100%{transform:rotate(0)}}
-.burst{position:absolute;font-size:30px;font-weight:1000;text-shadow:0 3px 8px #000;pointer-events:none;z-index:7;animation:rise .6s ease-out forwards}
-@keyframes rise{0%{opacity:0;transform:translate(-50%,0) scale(.75)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-80px) scale(1.15)}}
-.message{margin-top:11px;background:#0d1423;border:1px solid #33415c;border-radius:16px;padding:14px;min-height:75px;line-height:1.55;font-weight:800}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
-.result{display:none;margin-top:10px;padding:15px;border-radius:16px;background:#0f2a1b;border:1px solid #23673c;line-height:1.55}
-.ko{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:#0009;z-index:12;font-size:58px;font-weight:1000;letter-spacing:-2px}
-.ko.show{display:flex;animation:ko .5s ease-out}
-@keyframes ko{0%{opacity:0;transform:scale(.7)}100%{opacity:1;transform:scale(1)}}
+.topbar{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;margin-bottom:9px}
+.gauge{height:15px;border-radius:999px;background:#1f2937;overflow:hidden;border:1px solid #374151}
+.gauge-in{height:100%;width:100%;transform-origin:left;background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444)}
+.chip{background:#111827;border:1px solid #334155;border-radius:12px;padding:8px 10px;font-size:12px;font-weight:1000}
+.stage{
+ position:relative;height:440px;overflow:hidden;border-radius:24px;border:1px solid #344155;
+ background:
+ radial-gradient(circle at 50% 30%,rgba(255,255,255,.08),transparent 30%),
+ linear-gradient(#18243b 0 62%,#4a1f22 62% 64%,#101827 64% 100%);
+ user-select:none
+}
+.rope{position:absolute;left:-10px;right:-10px;height:4px;background:#d1d5db;opacity:.62;box-shadow:0 0 7px #fff5}
+.rope.r1{top:67%}.rope.r2{top:77%}.rope.r3{top:87%}
+.target{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);width:250px;height:300px}
+.torso{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:210px;height:155px;border-radius:90px 90px 28px 28px;background:linear-gradient(#5b6475,#293244);border:4px solid #737f94}
+.torso:after{content:"";position:absolute;left:50%;top:14px;width:80px;height:118px;transform:translateX(-50%);border-radius:35px;background:linear-gradient(#d6a57e,#9d6248);opacity:.55}
+.neck{position:absolute;left:50%;top:112px;transform:translateX(-50%);width:62px;height:55px;border-radius:20px;background:#bb8061;border:4px solid #d6a080}
+.head{position:absolute;left:50%;top:20px;transform:translateX(-50%);width:158px;height:158px;border-radius:50%;overflow:hidden;background:#374151;border:5px solid #e5e7eb;box-shadow:0 12px 30px #0008;z-index:3;transform-origin:50% 80%}
+.head img{width:100%;height:100%;object-fit:cover;display:block}
+.head.hit-left{animation:headLeft .2s ease-out}
+.head.hit-right{animation:headRight .2s ease-out}
+@keyframes headLeft{0%{transform:translateX(-50%) rotate(0)}45%{transform:translateX(-58%) rotate(-8deg) scale(.97)}100%{transform:translateX(-50%) rotate(0)}}
+@keyframes headRight{0%{transform:translateX(-50%) rotate(0)}45%{transform:translateX(-42%) rotate(8deg) scale(.97)}100%{transform:translateX(-50%) rotate(0)}}
+.glove{
+ position:absolute;bottom:15px;width:105px;height:105px;border-radius:52% 48% 48% 52%;
+ z-index:8;opacity:.96;filter:drop-shadow(0 12px 12px #0007)
+}
+.glove:after{content:"";position:absolute;bottom:-15px;left:28px;right:28px;height:28px;border-radius:8px;background:#7f1d1d}
+.left-glove{left:-95px;background:radial-gradient(circle at 38% 28%,#fb7185,#dc2626 60%,#7f1d1d);border:4px solid #fecaca;transform:rotate(15deg)}
+.right-glove{right:-95px;background:radial-gradient(circle at 38% 28%,#93c5fd,#2563eb 60%,#1e3a8a);border:4px solid #dbeafe;transform:rotate(-15deg)}
+.left-glove.punch{animation:leftPunch .24s cubic-bezier(.2,.9,.3,1)}
+.right-glove.punch{animation:rightPunch .24s cubic-bezier(.2,.9,.3,1)}
+@keyframes leftPunch{0%{left:-95px;bottom:15px;transform:rotate(15deg) scale(.9)}55%{left:105px;bottom:185px;transform:rotate(-10deg) scale(1.08)}100%{left:-95px;bottom:15px;transform:rotate(15deg) scale(.9)}}
+@keyframes rightPunch{0%{right:-95px;bottom:15px;transform:rotate(-15deg) scale(.9)}55%{right:105px;bottom:185px;transform:rotate(10deg) scale(1.08)}100%{right:-95px;bottom:15px;transform:rotate(-15deg) scale(.9)}}
+.impact{position:absolute;left:50%;top:37%;transform:translate(-50%,-50%);width:120px;height:120px;pointer-events:none;opacity:0;z-index:9}
+.impact:before,.impact:after{content:"";position:absolute;inset:0;border-radius:50%;border:5px solid #fff;box-shadow:0 0 20px #fff,0 0 40px #f59e0b}
+.impact.go{animation:impact .28s ease-out}
+@keyframes impact{0%{opacity:1;transform:translate(-50%,-50%) scale(.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.6)}}
+.pop{position:absolute;z-index:12;font-size:36px;font-weight:1000;text-shadow:0 4px 9px #000;pointer-events:none;animation:pop .65s ease-out forwards}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,0) scale(.7)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-90px) scale(1.2)}}
+.ko{position:absolute;inset:0;display:none;place-items:center;background:#000b;z-index:20;font-size:64px;font-weight:1000;letter-spacing:-.08em}
+.ko.show{display:grid;animation:ko .4s ease-out}
+@keyframes ko{0%{opacity:0;transform:scale(.6)}100%{opacity:1;transform:scale(1)}}
+.screen-hit{animation:screenHit .14s linear}
+@keyframes screenHit{0%,100%{transform:translate(0)}25%{transform:translate(-4px,2px)}50%{transform:translate(4px,-2px)}75%{transform:translate(-2px,1px)}}
+.msg{margin-top:10px;padding:13px 14px;border-radius:16px;background:#0b1220;border:1px solid #334155;min-height:72px;font-weight:850;line-height:1.5}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.punch-btn{position:relative;min-height:92px;border:0;border-radius:22px;color:#fff;font-weight:1000;font-size:18px;box-shadow:inset 0 -5px 0 #0004,0 9px 20px #0005}
+.punch-btn:active{transform:translateY(3px);box-shadow:inset 0 -2px 0 #0004}
+.left-btn{background:linear-gradient(145deg,#f43f5e,#b91c1c)}
+.right-btn{background:linear-gradient(145deg,#60a5fa,#1d4ed8)}
+.keycap{display:block;font-size:28px;margin-bottom:2px}
+.bottom-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.secondary{background:#202b40}
+.finish{background:#15803d}
+.toggleline{display:flex;justify-content:center;gap:10px;margin-top:10px}
+.toggle{border:1px solid #334155;border-radius:999px;padding:8px 11px;background:#111827;color:#cbd5e1;font-size:12px;font-weight:900}
+.toggle.on{color:#86efac;border-color:#166534}
+.result{display:none;margin-top:10px;background:#052e16;border:1px solid #166534;padding:14px;border-radius:16px;line-height:1.55}
+.tip{font-size:11px;color:#64748b;text-align:center;margin-top:9px;line-height:1.5}
+.combo-fire{color:#fbbf24;text-shadow:0 0 15px #f59e0b}
 </style>
 </head>
 <body>
-<div class="app">
-  <h1>🥊 스트레스 펀치</h1>
-  <div class="sub">현실 말고 게임 안에서만 시원하게.</div>
+<div id="app" class="app">
+  <div class="logo"><h1>🥊 STRESS PUNCH</h1><small>MOBILE</small></div>
 
   <section id="setup" class="panel">
     <div class="row">
-      <div class="label">상대 얼굴 사진</div>
-      <label class="file" for="photoInput">📷 사진 선택</label>
-      <input id="photoInput" type="file" accept="image/*">
-      <div id="filename" class="filename">선택된 사진 없음</div>
+      <div class="label">1. 상대 얼굴 사진</div>
+      <label class="file-btn" for="photo">📷 사진 선택</label>
+      <input id="photo" type="file" accept="image/*">
+      <div id="fileName" class="file-name">선택된 사진 없음</div>
     </div>
-
     <div class="row">
-      <div class="label">왜 화났어?</div>
-      <textarea id="reasonInput" maxlength="160" placeholder="예: 내 말을 무시하고 자기 말만 해서 열받음"></textarea>
+      <div class="label">2. 왜 화났어?</div>
+      <textarea id="reason" maxlength="180" placeholder="예: 내 말을 계속 무시해서 열받음"></textarea>
     </div>
-
-    <button id="startButton" class="btn primary" type="button">화풀이 시작 🔥</button>
-    <div class="note">사진은 이 브라우저 안에서만 표시되고 별도로 전송되지 않습니다.</div>
+    <button id="start" class="btn start">게임 시작 🔥</button>
+    <div class="tip">사진은 기기 안에서만 사용되며 서버로 업로드하지 않습니다.</div>
   </section>
 
   <section id="game" class="game">
-    <div class="hud">
-      <div class="bar"><div id="barFill" class="barfill"></div></div>
-      <div class="hitcount"><span id="hitCount">0</span> HIT</div>
+    <div class="topbar">
+      <div class="gauge"><div id="gaugeIn" class="gauge-in"></div></div>
+      <div class="chip"><span id="hits">0</span> HIT</div>
+      <div id="comboChip" class="chip">x<span id="combo">0</span></div>
     </div>
 
     <div id="stage" class="stage">
       <div class="rope r1"></div><div class="rope r2"></div><div class="rope r3"></div>
-      <div class="person">
-        <div id="head" class="head"><img id="faceImg" alt=""></div>
-        <div class="bodyshape"></div>
+
+      <div class="target">
+        <div class="torso"></div>
+        <div class="neck"></div>
+        <div id="head" class="head"><img id="face" alt=""></div>
       </div>
-      <div id="glove" class="glove"></div>
+
+      <div id="leftGlove" class="glove left-glove"></div>
+      <div id="rightGlove" class="glove right-glove"></div>
+      <div id="impact" class="impact"></div>
       <div id="ko" class="ko">K.O.</div>
     </div>
 
-    <div id="message" class="message">얼굴을 탭해서 스트레스를 풀어봐.</div>
+    <div id="message" class="msg">왼손이나 오른손 펀치를 눌러봐.</div>
 
-    <div class="actions">
-      <button id="backButton" class="btn secondary" type="button">다시 설정</button>
-      <button id="finishButton" class="btn primary" type="button">이제 됐다 😌</button>
+    <div class="controls">
+      <button id="leftBtn" class="punch-btn left-btn"><span class="keycap">🥊</span>왼손 펀치</button>
+      <button id="rightBtn" class="punch-btn right-btn"><span class="keycap">🥊</span>오른손 펀치</button>
+    </div>
+
+    <div class="toggleline">
+      <button id="soundToggle" class="toggle on">🔊 소리 ON</button>
+      <button id="vibeToggle" class="toggle on">📳 진동 ON</button>
+    </div>
+
+    <div class="bottom-actions">
+      <button id="reset" class="btn secondary">다시 설정</button>
+      <button id="finish" class="btn finish">이제 됐다 😌</button>
     </div>
 
     <div id="result" class="result"></div>
+    <div class="tip">PC에서는 키보드 A = 왼손, L = 오른손으로도 펀치할 수 있어.</div>
   </section>
 </div>
 
 <script>
 (function(){
-  var photoInput=document.getElementById('photoInput');
-  var reasonInput=document.getElementById('reasonInput');
-  var filename=document.getElementById('filename');
-  var startButton=document.getElementById('startButton');
-  var setup=document.getElementById('setup');
-  var game=document.getElementById('game');
-  var faceImg=document.getElementById('faceImg');
-  var stage=document.getElementById('stage');
-  var head=document.getElementById('head');
-  var glove=document.getElementById('glove');
-  var message=document.getElementById('message');
-  var hitCount=document.getElementById('hitCount');
-  var barFill=document.getElementById('barFill');
-  var result=document.getElementById('result');
-  var backButton=document.getElementById('backButton');
-  var finishButton=document.getElementById('finishButton');
-  var ko=document.getElementById('ko');
+  const $=id=>document.getElementById(id);
+  const setup=$('setup'), game=$('game'), photo=$('photo'), fileName=$('fileName'), reasonInput=$('reason'),
+        start=$('start'), face=$('face'), head=$('head'), stage=$('stage'),
+        leftGlove=$('leftGlove'), rightGlove=$('rightGlove'), impact=$('impact'), ko=$('ko'),
+        hitsEl=$('hits'), comboEl=$('combo'), comboChip=$('comboChip'), gaugeIn=$('gaugeIn'),
+        message=$('message'), leftBtn=$('leftBtn'), rightBtn=$('rightBtn'),
+        soundToggle=$('soundToggle'), vibeToggle=$('vibeToggle'), reset=$('reset'),
+        finish=$('finish'), result=$('result'), app=$('app');
 
-  var imageData='';
-  var hits=0;
-  var reason='';
+  let imageData='', reason='', hits=0, combo=0, lastPunch=0, soundOn=true, vibeOn=true, finished=false;
+  let audioCtx=null;
 
-  var baseLines=[
-    '좋아. 그 답답함만 여기다 두고 가자.',
+  const lines=[
+    '좋아. 스트레스 하나씩 날려버리자.',
     '그때 못 했던 말 대신 한 방.',
-    '생각날수록 열받지? 게임 안에서만 확실하게 풀자.',
-    '좋아, 스트레스 하나씩 지운다.',
-    '그 일 때문에 오늘 기분까지 망칠 필요는 없어.',
-    '오케이. 현실에서는 침착하게, 여기서는 시원하게.',
-    '이제 네 기분 회복이 우선이다.',
-    '거의 다 풀었다. 몇 방만 더.',
-    '오늘 화난 건 오늘 여기서 끝.',
-    '마지막. 스트레스만 남겨두고 가자.'
+    '생각할수록 열받지? 여기서만 확실하게 풀자.',
+    '좋아, 리듬 타고 계속!',
+    '콤보 좋다. 오늘 기분까지 뺏기진 말자.',
+    '이제 화보다 네 컨디션이 더 중요해.',
+    '거의 다 풀렸다. 조금만 더.',
+    '좋아. 오늘 스트레스는 오늘 끝내자.'
   ];
 
-  function shortText(s){
-    return s.length>24?s.slice(0,24)+'…':s;
-  }
+  function short(s){ return s.length>26?s.slice(0,26)+'…':s; }
 
-  function lines(){
-    if(!reason) return baseLines;
-    return [
-      '“'+shortText(reason)+'” 때문에 열받았지. 그 답답함만 날려.',
-      '그 상황 다시 생각났지? 말 대신 한 방.',
-      '네가 화난 포인트는 충분히 알겠어. 일단 스트레스부터 빼자.',
-      '계속 곱씹지 말고 여기다 두고 가.',
-      '좋아. 그 일은 여기까지만 생각하고 한 방 더.',
-      '현실에서는 침착하게. 게임 안에서는 시원하게.',
-      '오늘 네 에너지까지 뺏기진 말자.',
-      '이제 분노보다 네 기분 회복이 먼저다.',
-      '거의 다 풀었다. 마지막 몇 방.',
-      '끝. 오늘 스트레스는 여기 두고 가자.'
-    ];
-  }
-
-  photoInput.addEventListener('change',function(){
-    var f=photoInput.files && photoInput.files[0];
+  photo.addEventListener('change',()=>{
+    const f=photo.files && photo.files[0];
     if(!f) return;
-    filename.textContent=f.name;
-    var reader=new FileReader();
-    reader.onload=function(ev){ imageData=ev.target.result; };
-    reader.readAsDataURL(f);
+    fileName.textContent=f.name;
+    const r=new FileReader();
+    r.onload=e=>imageData=e.target.result;
+    r.readAsDataURL(f);
   });
 
-  startButton.addEventListener('click',function(){
-    if(!imageData){
-      alert('먼저 얼굴 사진을 선택해줘.');
-      return;
-    }
+  function unlockAudio(){
+    if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended') audioCtx.resume();
+  }
+
+  function punchSound(side, strong){
+    if(!soundOn) return;
+    unlockAudio();
+    const now=audioCtx.currentTime;
+
+    const osc=audioCtx.createOscillator();
+    const gain=audioCtx.createGain();
+    osc.type='triangle';
+    osc.frequency.setValueAtTime(side==='left'?95:78,now);
+    osc.frequency.exponentialRampToValueAtTime(45,now+.09);
+    gain.gain.setValueAtTime(strong?.28:.20,now);
+    gain.gain.exponentialRampToValueAtTime(.001,now+.12);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(now); osc.stop(now+.13);
+
+    const buffer=audioCtx.createBuffer(1,audioCtx.sampleRate*.08,audioCtx.sampleRate);
+    const data=buffer.getChannelData(0);
+    for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*(1-i/data.length);
+    const noise=audioCtx.createBufferSource();
+    const ng=audioCtx.createGain();
+    noise.buffer=buffer;
+    ng.gain.setValueAtTime(strong?.18:.12,now);
+    ng.gain.exponentialRampToValueAtTime(.001,now+.08);
+    noise.connect(ng).connect(audioCtx.destination);
+    noise.start(now);
+  }
+
+  function vibrate(strong){
+    if(!vibeOn || !navigator.vibrate) return;
+    try{navigator.vibrate(strong?[35,20,45]:30)}catch(e){}
+  }
+
+  start.addEventListener('click',()=>{
+    if(!imageData){ alert('먼저 얼굴 사진을 선택해줘.'); return; }
+    unlockAudio();
     reason=reasonInput.value.trim();
-    faceImg.src=imageData;
-    hits=0;
-    hitCount.textContent='0';
-    barFill.style.transform='scaleX(1)';
-    result.style.display='none';
-    ko.className='ko';
-    message.textContent=reason
-      ? '“'+shortText(reason)+'” 때문에 쌓인 거지? 여기서만 시원하게 풀자.'
-      : '좋아. 얼굴을 탭해서 쌓인 스트레스를 풀어보자.';
-    setup.style.display='none';
-    game.style.display='block';
+    face.src=imageData;
+    hits=0; combo=0; finished=false; lastPunch=0;
+    hitsEl.textContent='0'; comboEl.textContent='0';
+    gaugeIn.style.transform='scaleX(1)';
+    ko.className='ko'; result.style.display='none';
+    comboChip.classList.remove('combo-fire');
+    message.textContent=reason ? '“'+short(reason)+'” 때문에 쌓였지? 게임 안에서만 시원하게 풀자.' : '왼손/오른손 펀치를 번갈아 눌러봐.';
+    setup.style.display='none'; game.style.display='block';
     window.scrollTo(0,0);
   });
 
-  function doPunch(clientX,clientY){
-    if(hits>=25) return;
+  function popText(side,strong){
+    const p=document.createElement('div');
+    p.className='pop';
+    p.textContent=strong?'CRITICAL!':['퍽!','퐉!','POW!','BAM!'][Math.floor(Math.random()*4)];
+    p.style.left=(side==='left'?'56%':'44%');
+    p.style.top='36%';
+    stage.appendChild(p);
+    setTimeout(()=>p.remove(),700);
+  }
 
-    var rect=stage.getBoundingClientRect();
-    var x=clientX-rect.left;
-    var y=clientY-rect.top;
+  function hit(side){
+    if(finished) return;
+    const now=Date.now();
+    combo=(now-lastPunch<650)?combo+1:1;
+    lastPunch=now;
+    hits++;
 
-    glove.style.left=(x-46)+'px';
-    glove.style.top=(y-46)+'px';
-    glove.style.setProperty('--sx',(Math.random()>.5?'-150px':'150px'));
-    glove.className='glove';
-    void glove.offsetWidth;
-    glove.className='glove fire';
+    const strong=combo>0 && combo%8===0;
 
-    var dir=Math.random()>.5?1:-1;
-    head.style.setProperty('--rot',(dir*9)+'deg');
-    head.style.setProperty('--dx',(dir*10)+'px');
+    const glove=side==='left'?leftGlove:rightGlove;
+    glove.classList.remove('punch'); void glove.offsetWidth; glove.classList.add('punch');
+
     head.className='head';
     void head.offsetWidth;
-    head.className='head hit';
+    head.classList.add(side==='left'?'hit-right':'hit-left');
 
-    var burst=document.createElement('div');
-    burst.className='burst';
-    burst.textContent=['퍽!','퐉!','POW!','BAM!','퍽!!'][Math.floor(Math.random()*5)];
-    burst.style.left=x+'px';
-    burst.style.top=(y-5)+'px';
-    stage.appendChild(burst);
-    setTimeout(function(){ if(burst.parentNode) burst.parentNode.removeChild(burst); },650);
+    impact.classList.remove('go'); void impact.offsetWidth; impact.classList.add('go');
+    app.classList.remove('screen-hit'); void app.offsetWidth; app.classList.add('screen-hit');
+    popText(side,strong);
+    punchSound(side,strong);
+    vibrate(strong);
 
-    if(navigator.vibrate){ try{navigator.vibrate(25);}catch(e){} }
+    hitsEl.textContent=hits;
+    comboEl.textContent=combo;
+    comboChip.classList.toggle('combo-fire',combo>=5);
 
-    hits++;
-    hitCount.textContent=String(hits);
-    var remain=Math.max(0,1-hits/25);
-    barFill.style.transform='scaleX('+remain+')';
+    const remain=Math.max(0,1-hits/30);
+    gaugeIn.style.transform='scaleX('+remain+')';
 
-    var ls=lines();
-    var idx=Math.min(ls.length-1,Math.floor(hits/3));
-    message.textContent=ls[idx];
+    if(strong){
+      message.textContent='🔥 '+combo+' COMBO! 제대로 들어갔다!';
+    }else if(reason && hits<7){
+      message.textContent='“'+short(reason)+'” — 그 답답함만 여기다 날려.';
+    }else{
+      message.textContent=lines[Math.min(lines.length-1,Math.floor(hits/4))];
+    }
 
-    if(hits>=25){
+    if(hits>=30){
+      finished=true;
       ko.className='ko show';
       message.textContent='끝. 오늘 스트레스는 여기까지만. 이제 네 기분 챙기러 가자.';
       result.style.display='block';
-      result.innerHTML='🥊 <b>25 HIT 완료.</b><br>화난 일은 게임에 두고 현실에서는 네 에너지를 아끼자.';
+      result.innerHTML='🥊 <b>'+hits+' HIT / 최고 '+combo+' COMBO</b><br>게임에서는 시원하게, 현실에서는 네 에너지를 아끼자.';
     }
   }
 
-  stage.addEventListener('click',function(e){
-    doPunch(e.clientX,e.clientY);
+  leftBtn.addEventListener('pointerdown',e=>{e.preventDefault();hit('left')});
+  rightBtn.addEventListener('pointerdown',e=>{e.preventDefault();hit('right')});
+
+  document.addEventListener('keydown',e=>{
+    if(game.style.display!=='block') return;
+    if(e.key.toLowerCase()==='a') hit('left');
+    if(e.key.toLowerCase()==='l') hit('right');
   });
 
-  backButton.addEventListener('click',function(){
-    game.style.display='none';
-    setup.style.display='block';
-    ko.className='ko';
+  soundToggle.addEventListener('click',()=>{
+    soundOn=!soundOn;
+    soundToggle.classList.toggle('on',soundOn);
+    soundToggle.textContent=soundOn?'🔊 소리 ON':'🔇 소리 OFF';
+    if(soundOn) unlockAudio();
+  });
+  vibeToggle.addEventListener('click',()=>{
+    vibeOn=!vibeOn;
+    vibeToggle.classList.toggle('on',vibeOn);
+    vibeToggle.textContent=vibeOn?'📳 진동 ON':'📴 진동 OFF';
   });
 
-  finishButton.addEventListener('click',function(){
+  reset.addEventListener('click',()=>{
+    game.style.display='none'; setup.style.display='block';
+    ko.className='ko'; finished=false;
+  });
+
+  finish.addEventListener('click',()=>{
+    finished=true;
     result.style.display='block';
-    result.innerHTML='😌 <b>'+hits+' HIT 후 종료.</b><br>'+(reason?'“'+shortText(reason)+'” 때문에 시작했지만, 이제 그 일보다 네 컨디션이 더 중요해.':'오늘 스트레스는 여기까지만.') ;
+    result.innerHTML='😌 <b>'+hits+' HIT 후 종료</b><br>'+(reason?'“'+short(reason)+'” 때문에 시작했지만, 이제 그 일보다 네 컨디션이 더 중요해.':'오늘 스트레스는 여기까지만.');
     message.textContent='종료. 오늘 스트레스는 이 화면에 두고 가자.';
   });
 })();
